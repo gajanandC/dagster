@@ -25,7 +25,7 @@ def poll_for_run(instance, run_id, timeout=5):
                 raise Exception('Timed out')
 
 
-def poll_for_step_start(instance, run_id, timeout=5):
+def poll_for_step_start(instance, run_id, timeout=15):
     total_time = 0
     backoff = 0.01
 
@@ -38,7 +38,10 @@ def poll_for_step_start(instance, run_id, timeout=5):
             total_time += backoff
             backoff = backoff * 2
             if total_time > timeout:
-                raise Exception('Timed out')
+                raise Exception(
+                    'Timed out. Logs: '
+                    + repr([log_record.dagster_event.event_type_value for log_record in logs])
+                )
 
 
 @solid(config_schema={'length': Field(Int)}, output_defs=[])
