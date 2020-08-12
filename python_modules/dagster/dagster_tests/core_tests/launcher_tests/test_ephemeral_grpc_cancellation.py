@@ -120,4 +120,6 @@ def test_cancel_run():
             # soft termination
             assert [ev for ev in logs if ev.dagster_event.event_type_value == 'STEP_FAILURE']
 
+            stream_events_result_thread.join()
+
         server_process.wait()
